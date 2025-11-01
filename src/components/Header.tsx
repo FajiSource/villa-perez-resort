@@ -23,7 +23,7 @@ function Header() {
                 </NavLink>
             </nav>
             <div>
-                <Button variant="contained" className='bg-rose'>
+                <Button variant="contained" className='bg-rose rounded!'>
                     Login Now
                 </Button>
             </div>

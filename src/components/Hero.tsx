@@ -10,7 +10,7 @@ export default function Hero() {
         >
             <h1 className='text-5xl font-bold text-white text-center max-w-2xl'>Where Every Stay Comes with a <span className='text-rose'>Splash</span></h1>
 
-            <div className='absolute bottom-0 transform  w-1/2 bg-white flex items-center justify-evenly p-5 rounded-md  translate-y-10'>
+            <div className='shadow-lg absolute bottom-0 transform  w-1/2 bg-white flex items-center justify-evenly p-5 rounded-md  translate-y-10'>
                 <div className='flex items-center gap-2 text-black w-fit h-fit'>
                     <FaRegCalendarAlt  className='text-lg text-rose'/>
                     <div className='flex flex-col'>

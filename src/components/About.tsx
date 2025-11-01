@@ -5,7 +5,7 @@ function About() {
         <section
             className="hero w-full h-screen bg-center bg-cover flex items-center justify-center bg-white flex items-center justify-center gap-10 px-10"
         >
-            <img src={aboutImage} alt=""  className="w-80 md:w-96 "/>
+            <img src={aboutImage} alt=""  className="w-80 md:w-96 rounded"/>
 
             <div className="text-black flex flex-col gap-3">
                 <span className="text-xs flex flex-row items-center gap-3 font-medium">ABOUT US <span className="border-b-2  border-rose w-[50px]"></span></span>
