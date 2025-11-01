@@ -4,6 +4,7 @@ import Hero from "../../components/Hero";
 import BookCards from "../../components/BookCards";
 import Services from "../../components/Services";
 import Explore from "../../components/Explore";
+import Footer from "../../components/Footer";
 
 export default function Landing() {
   return (
@@ -14,7 +15,7 @@ export default function Landing() {
       <BookCards />
       <Services />
       <Explore/>
-      <div className="h-[200vh] bg-gray-100"></div>
+      <Footer/>
     </main>
   );
 }
