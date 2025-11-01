@@ -6,12 +6,13 @@ import Services from "../../components/Services";
 
 export default function Landing() {
   return (
-    <main className="flex-1  w-screen h-screen overflow-x-hidden relative">
-        <Header/>
-        <Hero/>
-        <About/>
-        <BookCards/>
-        <Services/>
+    <main className="flex-1 w-screen overflow-x-hidden">
+      <Header  />
+      <Hero />
+      <About />
+      <BookCards />
+      <Services />
+      <div className="h-[200vh] bg-gray-100"></div>
     </main>
-  )
+  );
 }
