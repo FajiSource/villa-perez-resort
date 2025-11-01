@@ -28,7 +28,7 @@ function Header() {
     };
     return (
         <header
-            className={`w-full flex flex-row items-center justify-evenly z-50 h-auto py-2 transition-all duration-300 ease-in-out ${isFixed
+            className={` w-full flex flex-row items-center justify-evenly z-50 h-auto py-2 transition-all duration-300 ease-in-out ${isFixed
                 ? "fixed top-0 left-0 bg-white shadow-md backdrop-blur-md"
                 : "absolute top-0 bg-transparent"
                 }`}
