@@ -5,7 +5,8 @@ import { Button } from '@mui/material';
 export default function Hero() {
     return (
         <section
-            className="hero w-full h-screen bg-center bg-cover flex items-center justify-center relative"
+            id='hero'
+            className="hero w-full h-screen bg-center bg-cover flex items-center justify-center "
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
             <h1 className='text-5xl font-bold text-white text-center max-w-2xl'>Where Every Stay Comes with a <span className='text-rose'>Splash</span></h1>

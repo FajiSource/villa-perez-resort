@@ -1,11 +1,13 @@
 import { Button } from "@mui/material";
 export default function BookCards() {
     return (
-        <section className="w-full h-screen flex items-center justify-center flex-col text-black gap-10">
+        <section 
+         id='services'
+        className="w-full h-screen flex items-center justify-center flex-col text-black gap-10">
             <div>
                 <div className="text-left mb-10 max-w-xs">
                     <span className="text-sm flex flex-row items-center gap-3 font-medium">Villa Perez<span className="border-b-2  border-rose w-[50px]"></span></span>
-                    <span className="text-2xl font-medium ">The Most Memorable Rest Time Starts Here.</span>
+                    <span className="text-2xl font-bold ">The Most Memorable Rest Time Starts Here.</span>
                 </div>
 
                 <div className="flex flex-row justify-evenly gap-10">

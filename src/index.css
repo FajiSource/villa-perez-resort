@@ -27,5 +27,6 @@ body {
   background-color: white;
   place-items: center;
   min-width: 320px;
+  overflow-x: hidden;
   min-height: 100vh;
 }
