@@ -4,7 +4,7 @@ export default function Explore() {
     return (
         <section 
         id="explore"
-        className="w-full h-screen text-black relative flex  items-start flex-col ">
+        className="w-full pb-20 text-black relative flex  items-start flex-col ">
             <div className="text-center flex flex-col w-full items-center justify-center mb-10 max-w-xs self-center">
                 <span className="text-sm flex flex-row items-center gap-3 font-medium">EXPLORE<span className="border-b-2  border-rose w-[50px]"></span></span>
                 <span className="text-3xl font-bold ">What's New Today.</span>
