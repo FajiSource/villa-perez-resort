@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "../assets/beach-logo.png";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
