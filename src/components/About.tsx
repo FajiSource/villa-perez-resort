@@ -1,5 +1,5 @@
 import { Button } from "@mui/material"
-import aboutImage from '../assets/about.jpg'
+import aboutImage from '../assets/about.jpeg'
 function About() {
     return (
         <section

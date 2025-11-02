@@ -1,4 +1,4 @@
-import serviceImage from '../assets/beach-bg.jpg'
+import serviceImage from '../assets/beach-bg.jpeg'
 import { RiShieldStarLine } from "react-icons/ri";
 import { MdCleanHands } from "react-icons/md";
 import { FaCarRear, FaRegMap } from "react-icons/fa6";

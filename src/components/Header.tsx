@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Logo from "../assets/beach-logo.png";
+import Logo from "../assets/logo.png";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -34,7 +34,7 @@ function Header() {
                 }`}
         >
             <Link to={"/"}>
-                <img src={Logo} alt="logo" className="w-24" />
+                <img src={Logo} alt="logo" className="w-15" />
             </Link>
 
             <nav className={`flex items-center gap-5 justify-center flex-row ${isFixed ? 'text-black' : 'text-white'}`}>

@@ -1,5 +1,5 @@
 import { FaRegCalendarAlt, FaUser } from 'react-icons/fa';
-import backgroundImage from '../assets/beach-bg.jpg';
+import backgroundImage from '../assets/beach-bg.jpeg';
 import { Button } from '@mui/material';
 
 export default function Hero() {
