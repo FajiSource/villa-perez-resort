@@ -12,6 +12,7 @@ import {
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { apiService } from "../services/apiService";
 
 interface SignUpFormData {
   name: string;
@@ -40,11 +41,7 @@ export function SignUp({ onToggle }: SignUpProps) {
 
   const handleGoogleSignUp = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth", {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await res.json();
+      const data = await apiService.get<{ url?: string }>("/auth");
       if (data.url) {
         window.location.href = data.url;
       } else {

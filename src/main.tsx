@@ -5,11 +5,14 @@ import { RouterProvider } from 'react-router-dom'
 import router from './routes/Router.ts'
 import { ThemeProvider } from '@emotion/react'
 import theme from './theme.tsx'
+import { AuthProvider } from './context/AuthContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router}/>
+      <AuthProvider>
+        <RouterProvider router={router}/>
+      </AuthProvider>
     </ThemeProvider>
   </StrictMode>,
 )

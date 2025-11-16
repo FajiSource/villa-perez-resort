@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Card,
@@ -12,6 +13,8 @@ import {
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { apiService } from "../services/apiService";
+import { useAuth } from "../context/AuthContext";
 
 interface SignInFormData {
   email: string;
@@ -24,24 +27,44 @@ interface SignInProps {
 
 export function SignIn({ onToggle }: SignInProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormData>();
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log("Sign in data:", data);
-    toast.success("Welcome back to Paradise Villa Resort!");
+  const onSubmit = async (data: SignInFormData) => {
+    setIsSubmitting(true);
+    try {
+      const response = await apiService.post<{ access_token: string; user?: any }>(
+        "/api/auth/login",
+        {
+          email: data.email,
+          password: data.password,
+        }
+      );
+
+      if (response.access_token) {
+        login(response.access_token);
+        toast.success("Welcome back to Paradise Villa Resort!");
+        navigate("/dashboard", { replace: true });
+      } else {
+        toast.error("Invalid email or password");
+      }
+    } catch (error: any) {
+      console.error("Sign in error:", error);
+      toast.error(error.message || "Invalid email or password");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth", {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await res.json();
+      const data = await apiService.get<{ url?: string }>("/auth");
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -58,7 +81,7 @@ export function SignIn({ onToggle }: SignInProps) {
   return (
     <Card className="border-none shadow-xl backdrop-blur-md bg-white/80 rounded-2xl overflow-hidden p-10!">
       <CardHeader className="text-center space-y-2 pb-4">
-        <CardTitle className="text-3xl font-bold text-amber-700">
+        <CardTitle className="text-3xl font-bold text-[#bc1c5c]">
           Welcome Back
         </CardTitle>
         <CardDescription className="text-gray-600">
@@ -76,7 +99,7 @@ export function SignIn({ onToggle }: SignInProps) {
               <Input
                 id="email"
                 type="email"
-                className="pl-2! border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                className="pl-2! border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -99,7 +122,7 @@ export function SignIn({ onToggle }: SignInProps) {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                className="pl-2! pr-10 border-gray-300 focus:border-amber-500 focus:ring-amber-500 "
+                className="pl-2! pr-10 border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] "
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -120,13 +143,13 @@ export function SignIn({ onToggle }: SignInProps) {
               <input
                 id="remember"
                 type="checkbox"
-                className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                className="rounded border-gray-300 text-[#e82574] focus:ring-[#e82574]"
               />
               <span>Remember me</span>
             </Label>
             <button
               type="button"
-              className="text-amber-600 hover:text-amber-700 hover:underline"
+              className="text-[#e82574] hover:text-[#bc1c5c] hover:underline"
             >
               Forgot password?
             </button>
@@ -134,9 +157,10 @@ export function SignIn({ onToggle }: SignInProps) {
 
           <Button
             type="submit"
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg transition"
+            className="w-full bg-[#e82574] hover:bg-[#bc1c5c] text-white py-2 rounded-lg transition"
+            disabled={isSubmitting}
           >
-            Sign In
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
         </form>
       </CardContent>
@@ -154,7 +178,7 @@ export function SignIn({ onToggle }: SignInProps) {
         <Button
           type="button"
           variant="outline"
-          className="w-full border-gray-300 hover:border-amber-400 hover:bg-amber-50 text-gray-700"
+          className="w-full border-gray-300 hover:border-[#e82574] hover:bg-[#e82574]/10 text-gray-700"
           onClick={handleGoogleSignIn}
         >
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -184,7 +208,7 @@ export function SignIn({ onToggle }: SignInProps) {
           <button
             type="button"
             onClick={onToggle}
-            className="text-amber-600 hover:text-amber-700 hover:underline font-medium"
+            className="text-[#e82574] hover:text-[#bc1c5c] hover:underline font-medium"
           >
             Sign up
           </button>

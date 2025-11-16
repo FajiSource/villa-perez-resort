@@ -1,17 +1,19 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function GoogleSuccess() {
   const [params] = useSearchParams();
   const token = params.get("token");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem("token", token);
-      navigate("/"); 
+      login(token);
+      navigate("/dashboard", { replace: true }); 
     }
-  }, [token]);
+  }, [token, login, navigate]);
 
   return <div>Signing you in with Google...</div>;
 }
