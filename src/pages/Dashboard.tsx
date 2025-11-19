@@ -6,7 +6,7 @@ import { apiService } from "../services/apiService";
 import { type Booking } from "../types/booking";
 
 export default function Dashboard() {
-  const { logout, token } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,8 +26,10 @@ export default function Dashboard() {
       const bookings = await apiService.get<Booking[]>("/api/bookings", {
         headers,
       });
+      // Extract bookings array from response
+      const bookingsArray = Array.isArray(bookings) ? bookings : (bookings as any)?.data || [];
       // Get the 3 most recent bookings
-      const sorted = bookings.sort(
+      const sorted = bookingsArray.sort(
         (a, b) =>
           new Date(b.created_at || 0).getTime() -
           new Date(a.created_at || 0).getTime()
@@ -41,10 +43,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -54,15 +52,46 @@ export default function Dashboard() {
     });
   };
 
+  const getStatusBadge = (status?: string) => {
+    const bookingStatus = (status || 'pending').toLowerCase();
+    
+    if (bookingStatus === 'approved') {
+      return (
+        <span className="text-xs sm:text-sm px-3! py-1! rounded-full bg-green-100 text-green-800 font-medium">
+          ✓ Approved
+        </span>
+      );
+    }
+    if (bookingStatus === 'declined') {
+      return (
+        <span className="text-xs sm:text-sm px-3! py-1! rounded-full bg-red-100 text-red-800 font-medium">
+          ✗ Declined
+        </span>
+      );
+    }
+    if (bookingStatus === 'cancelled' || bookingStatus === 'canceled') {
+      return (
+        <span className="text-xs sm:text-sm px-3! py-1! rounded-full bg-gray-100 text-gray-800 font-medium">
+          ⊗ Cancelled
+        </span>
+      );
+    }
+    return (
+      <span className="text-xs sm:text-sm px-3! py-1! rounded-full bg-yellow-100 text-yellow-800 font-medium">
+        ⏳ Pending
+      </span>
+    );
+  };
+
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 relative ">
+    <div className="min-h-full w-full overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-white to-[#e82574]/5">
+      <div className="max-w-7xl mx-auto px-4! sm:px-6! lg:px-8! py-6! sm:py-8! lg:py-12! relative">
         {/* Header Section */}
-        <div className="bg-white shadow-xl border border-[#e82574]/20 mb-6! sm:mb-8! w-screen lg:mb-0!">
-          <div className="px-6! sm:px-8! lg:px-10! py-3! sm:py-2! lg:py-4!">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+        <div className="bg-white shadow-xl border border-[#e82574]/20 mb-6! sm:mb-8! rounded-2xl overflow-hidden">
+          <div className="px-6! sm:px-8! lg:px-10! py-6! sm:py-8!">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4! sm:gap-6!">
               <div className="space-y-2">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3!">
                   <div className="w-12 h-12 bg-[#e82574] rounded-xl flex items-center justify-center shadow-md">
                     <span className="text-2xl">🏖️</span>
                   </div>
@@ -70,18 +99,12 @@ export default function Dashboard() {
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#bc1c5c]">
                       Dashboard
                     </h1>
-                    <p className="text-gray-600 text-sm sm:text-base mt-1">
+                    <p className="text-gray-600 text-sm sm:text-base mt-1!">
                       Welcome back! Manage your bookings and reservations.
                     </p>
                   </div>
                 </div>
               </div>
-              <Button
-                onClick={handleLogout}
-                className="px-5! bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto"
-              >
-                Logout
-              </Button>
             </div>
           </div>
         </div>
@@ -107,8 +130,8 @@ export default function Dashboard() {
         </div> */}
 
         {/* Quick Actions Grid */}
-        <div className="flex items-center justify-center relative w-screen mt-5!">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4! gap-4! sm:gap-6! mb-6! sm:mb-8!">
+        <div className="flex items-center justify-center relative w-full mt-5!">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4! gap-4! sm:gap-6! mb-6! sm:mb-8! w-full">
             <button
               onClick={() => navigate("/bookings")}
               className=" group bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:border-blue-300 p-6! sm:p-7! transition-all duration-300 text-left cursor-pointer"
@@ -216,7 +239,7 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Bookings Section */}
-        <div className="bg-white border border-[#e82574]/20 overflow-hidden w-screen">
+        <div className="bg-white border border-[#e82574]/20 overflow-hidden rounded-2xl shadow-lg">
           <div className="p-6! sm:p-8! lg:p-10!">
             <div className="flex flex-col sm:flex-row! sm:items-center! sm:justify-between! gap-4! mb-6! sm:mb-8!">
               <div>
@@ -256,13 +279,14 @@ export default function Dashboard() {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3! mb-3!">
+                        <div className="flex items-center gap-3! mb-3! flex-wrap">
                           <h4 className="font-bold text-gray-800 text-lg sm:text-xl">
                             {booking.name}
                           </h4>
                           <span className="text-xs sm:text-sm px-3! py-1! rounded-full bg-blue-100 text-blue-800 font-medium">
                             RC ID: {booking.rc_id}
                           </span>
+                          {getStatusBadge(booking.status)}
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2! text-sm text-gray-600">
                           <div className="flex items-center gap-2!">

@@ -21,6 +21,13 @@ export interface Booking {
   special_req?: string;
   created_at?: string;
   updated_at?: string;
+  status?: string; // pending, approved, declined, cancelled, completed
+  feedback?: {
+    id: number;
+    rating: number;
+    comment?: string;
+    created_at: string;
+  } | null;
 }
 
 export interface BookingFormData {

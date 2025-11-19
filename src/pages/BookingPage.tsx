@@ -405,7 +405,7 @@ export default function BookingPage() {
       <div className="min-h-screen w-screen overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-14 w-14 border-4 border-[#e82574]/20 border-t-[#e82574] mx-auto !mb-4"></div>
+            <div className="animate-spin rounded-full h-14 w-14 border-4 border-[#e82574]/20 border-t-[#e82574] mx-auto mb-4!"></div>
             <p className="text-gray-600 text-sm sm:text-base font-medium">
               Loading villa details...
             </p>
@@ -426,9 +426,9 @@ export default function BookingPage() {
         {/* Header Section */}
         <div className="bg-white shadow-lg border border-[#e82574]/20 mb-6! sm:mb-8! w-screen">
           <div className="px-6! sm:px-8! lg:px-10! py-3! sm:py-2! lg:py-2!">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between !gap-4 sm:!gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4! sm:gap-6!">
               <div className="space-y-2">
-                <div className="flex items-center !gap-3">
+                <div className="flex items-center gap-3!">
                   <div className="w-12 h-12 bg-[#e82574] flex items-center justify-center shadow-md">
                     <span className="text-2xl">📝</span>
                   </div>
@@ -436,7 +436,7 @@ export default function BookingPage() {
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#bc1c5c]">
                       Complete Your Booking
                     </h1>
-                    <p className="text-gray-600 text-sm sm:text-base !mt-1">
+                    <p className="text-gray-600 text-sm sm:text-base mt-1!">
                       Fill in your details to reserve {selectedRoom.name}
                     </p>
                   </div>
@@ -445,7 +445,7 @@ export default function BookingPage() {
               <Button
                 onClick={() => navigate("/")}
                 variant="outline"
-                className="border-[#e82574] text-[#e82574] hover:bg-[#e82574]/10 shadow-sm hover:shadow-md transition-all duration-200 w-full sm:w-auto !px-6 !py-2.5"
+                className="border-[#e82574] text-[#e82574] hover:bg-[#e82574]/10 shadow-sm hover:shadow-md transition-all duration-200 w-full sm:w-auto px-6! py-2.5!"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -456,7 +456,7 @@ export default function BookingPage() {
 
         {/* Room Info & Booking Form Section */}
         <div className="flex items-center justify-center w-screen">
-          <div className="grid grid-cols-1 lg:grid-cols-2 !gap-6 sm:!gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6! sm:gap-8!">
             {/* Left side - Room Image & Info */}
             <div className="bg-white shadow-xl border border-[#e82574]/20 overflow-hidden w-screen lg:w-auto">
               <div className="relative h-64 sm:h-80 lg:h-full min-h-[400px] overflow-hidden">
@@ -466,11 +466,11 @@ export default function BookingPage() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/20" />
-                <div className="relative z-10 !p-6 sm:!p-8 lg:!p-10 flex flex-col justify-end text-white h-full">
-                  <h2 className="text-3xl sm:text-4xl font-bold !mb-4">
+                <div className="relative z-10 p-6! sm:p-8! lg:p-10! flex flex-col justify-end text-white h-full">
+                  <h2 className="text-3xl sm:text-4xl font-bold mb-4!">
                     {selectedRoom.name}
                   </h2>
-                  <p className="text-white/90 max-w-md text-base sm:text-lg !mb-6">
+                  <p className="text-white/90 max-w-md text-base sm:text-lg mb-6!">
                     {selectedRoom.description}
                   </p>
                   <div className="space-y-2 mb-2!">
@@ -481,11 +481,11 @@ export default function BookingPage() {
                     <p className="text-white/80 text-sm sm:text-base">
                       Maximum {selectedRoom.maxGuests} guests
                     </p>
-                    <div className="flex flex-wrap !gap-2 !mt-4">
+                    <div className="flex flex-wrap gap-2! mt-4!">
                       {selectedRoom.amenities.map((amenity, index) => (
                         <span
                           key={index}
-                          className="!px-3 !py-1.5 bg-white/20 backdrop-blur-sm text-sm font-medium"
+                          className="px-3! py-1.5! bg-white/20 backdrop-blur-sm text-sm font-medium"
                         >
                           {amenity}
                         </span>
@@ -498,17 +498,17 @@ export default function BookingPage() {
 
             {/* Right side - Booking Form */}
             <div className="bg-white shadow-xl border border-[#e82574]/20 overflow-hidden w-screen lg:w-auto">
-              <div className="!p-6 sm:!p-8 lg:!p-10">
+              <div className="p-6! sm:p-8! lg:p-10!">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Error Message Display */}
                   {errorMessage && (
-                    <div className="bg-red-50 border-2 border-red-200 !p-4 !mb-4">
-                      <div className="flex items-start !gap-3">
+                    <div className="bg-red-50 border-2 border-red-200 p-4! mb-4!">
+                      <div className="flex items-start gap-3!">
                         <div className="flex-shrink-0">
                           <span className="text-2xl">⚠️</span>
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-red-800 font-semibold !mb-1">
+                          <h3 className="text-red-800 font-semibold mb-1">
                             Booking Error
                           </h3>
                           <p className="text-red-700 text-sm">{errorMessage}</p>
@@ -516,7 +516,7 @@ export default function BookingPage() {
                         <button
                           type="button"
                           onClick={() => setErrorMessage(null)}
-                          className="flex-shrink-0 text-red-600 hover:text-red-800 !ml-2"
+                          className="flex-shrink-0 text-red-600 hover:text-red-800 ml-2!"
                           aria-label="Close error message"
                         >
                           <span className="text-xl">×</span>
@@ -526,7 +526,7 @@ export default function BookingPage() {
                   )}
 
                   {/* Dates */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 !gap-4 sm:!gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4! sm:gap-6!">
                     <div className="space-y-2 mb-2!">
                       <Label
                         htmlFor="check_in"
@@ -538,7 +538,7 @@ export default function BookingPage() {
                         id="check_in"
                         type="date"
                         min={today}
-                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !px-4 !py-3 !mt-2"
+                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                         {...register("check_in", {
                           required: "Check-in date is required",
                           onChange: () => setErrorMessage(null),
@@ -554,7 +554,7 @@ export default function BookingPage() {
                         })}
                       />
                       {errors.check_in && (
-                        <p className="text-sm text-red-500 !mt-1">
+                        <p className="text-sm text-red-500 mt-1!">
                           {errors.check_in.message}
                         </p>
                       )}
@@ -571,7 +571,7 @@ export default function BookingPage() {
                         id="check_out"
                         type="date"
                         min={checkIn || tomorrow}
-                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !px-4 !py-3 !mt-2"
+                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                         {...register("check_out", {
                           required: "Check-out date is required",
                           onChange: () => setErrorMessage(null),
@@ -587,7 +587,7 @@ export default function BookingPage() {
                         })}
                       />
                       {errors.check_out && (
-                        <p className="text-sm text-red-500 !mt-1">
+                        <p className="text-sm text-red-500 mt-1!">
                           {errors.check_out.message}
                         </p>
                       )}
@@ -604,7 +604,7 @@ export default function BookingPage() {
                       type="number"
                       min={1}
                       max={selectedRoom.maxGuests}
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !px-4 !py-3 !mt-2"
+                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                       {...register("pax", {
                         required: "Number of guests is required",
                         min: {
@@ -619,11 +619,11 @@ export default function BookingPage() {
                       })}
                     />
                     {errors.pax && (
-                      <p className="text-sm text-red-500 !mt-1">
+                      <p className="text-sm text-red-500 mt-1!">
                         {errors.pax.message}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500 !mt-1">
+                    <p className="text-xs text-gray-500 mt-1!">
                       Maximum {selectedRoom.maxGuests} guests
                     </p>
                   </div>
@@ -636,7 +636,7 @@ export default function BookingPage() {
                     <Input
                       id="name"
                       type="text"
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !px-4 !py-3 !mt-2"
+                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                       {...register("name", {
                         required: "Name is required",
                         minLength: {
@@ -646,7 +646,7 @@ export default function BookingPage() {
                       })}
                     />
                     {errors.name && (
-                      <p className="text-sm text-red-500 !mt-1">
+                      <p className="text-sm text-red-500 mt-1!">
                         {errors.name.message}
                       </p>
                     )}
@@ -663,7 +663,7 @@ export default function BookingPage() {
                     <Input
                       id="contact"
                       type="tel"
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !px-4 !py-3 !mt-2"
+                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                       placeholder="+63 9XX XXX XXXX"
                       {...register("contact", {
                         required: "Contact number is required",
@@ -674,7 +674,7 @@ export default function BookingPage() {
                       })}
                     />
                     {errors.contact && (
-                      <p className="text-sm text-red-500 !mt-1">
+                      <p className="text-sm text-red-500 mt-1!">
                         {errors.contact.message}
                       </p>
                     )}
@@ -690,7 +690,7 @@ export default function BookingPage() {
                     </Label>
                     <textarea
                       id="special_req"
-                      className="w-full min-h-[120px] !px-4 !py-4 !mt-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e82574] focus:border-[#e82574] resize-none"
+                      className="w-full min-h-[120px] px-4! py-4! mt-2! border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e82574] focus:border-[#e82574] resize-none"
                       {...register("special_req")}
                       placeholder="Any special requests or notes..."
                     />
@@ -698,8 +698,8 @@ export default function BookingPage() {
 
                   {/* Price Summary */}
                   {calculatedPrice > 0 && (
-                    <div className="bg-gradient-to-r from-[#e82574]/10 to-[#e82574]/5 !p-6 border-2 border-[#e82574]/30">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center !gap-3 !mb-3">
+                    <div className="bg-gradient-to-r from-[#e82574]/10 to-[#e82574]/5 p-6! border-2 border-[#e82574]/30">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3! mb-3!">
                         <span className="font-semibold text-gray-700 text-base sm:text-lg">
                           Total Price:
                         </span>
@@ -720,19 +720,19 @@ export default function BookingPage() {
                   )}
 
                   {/* Buttons */}
-                  <div className="flex flex-col sm:flex-row !gap-4 !pt-6">
+                  <div className="flex flex-col sm:flex-row gap-4! pt-6!">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => navigate("/")}
-                      className="flex-1 border-gray-300 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-200 !py-3 !h-auto"
+                      className="flex-1 border-gray-300 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-200 py-3! h-auto!"
                       disabled={isSubmitting}
                     >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
-                      className="flex-1 bg-[#e82574] hover:bg-[#bc1c5c] text-white shadow-md hover:shadow-lg transition-all duration-200 !py-3 !h-auto"
+                      className="flex-1 bg-[#e82574] hover:bg-[#bc1c5c] text-white shadow-md hover:shadow-lg transition-all duration-200 py-3! h-auto!"
                       disabled={isSubmitting || calculatedPrice === 0}
                     >
                       {isSubmitting ? "Submitting..." : "Confirm Booking"}

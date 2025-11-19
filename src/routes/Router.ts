@@ -4,12 +4,14 @@ import GoogleCallback from "../pages/GoogleCallback";
 import AuthLayout from "../layout/AuthLayout";
 import GoogleSuccess from "../pages/GoogleSuccess";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+import DashboardLayout from "../layout/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
 import Bookings from "../pages/Bookings";
 import BookingPage from "../pages/BookingPage";
 import ViewVillas from "../pages/ViewVillas";
 import Notifications from "../pages/Notifications";
 import ManageAccount from "../pages/ManageAccount";
+import ReadMore from "../pages/ReadMore";
 
 
 const router = createBrowserRouter([
@@ -30,35 +32,40 @@ const router = createBrowserRouter([
         Component: GoogleSuccess
     },
     {
+        path: "read-more",
+        Component: ReadMore
+    },
+    {
         Component: ProtectedRoute,
         children: [
-            {
-                index: true,
-                Component: Landing,
-            },
-            {
-                path: "dashboard",
-                Component: Dashboard,
-            },
             {
                 path: "book",
                 Component: BookingPage,
             },
             {
-                path: "bookings",
-                Component: Bookings,
-            },
-            {
-                path: "villas",
-                Component: ViewVillas,
-            },
-            {
-                path: "notifications",
-                Component: Notifications,
-            },
-            {
-                path: "account",
-                Component: ManageAccount,
+                Component: DashboardLayout,
+                children: [
+                    {
+                        path: "dashboard",
+                        Component: Dashboard,
+                    },
+                    {
+                        path: "bookings",
+                        Component: Bookings,
+                    },
+                    {
+                        path: "villas",
+                        Component: ViewVillas,
+                    },
+                    {
+                        path: "notifications",
+                        Component: Notifications,
+                    },
+                    {
+                        path: "account",
+                        Component: ManageAccount,
+                    },
+                ],
             },
         ],
     },

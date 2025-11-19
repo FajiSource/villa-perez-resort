@@ -17,10 +17,18 @@ class ApiService {
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     
+    // Get token from localStorage
+    const token = localStorage.getItem("token");
+    
     const defaultHeaders: Record<string, string> = {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
+
+    // Add Authorization header if token exists
+    if (token) {
+      defaultHeaders["Authorization"] = `Bearer ${token}`;
+    }
 
     // Merge headers properly
     const headers = new Headers();

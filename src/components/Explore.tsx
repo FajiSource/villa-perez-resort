@@ -1,22 +1,52 @@
-import { Button } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAnnouncements, type Announcement } from "../lib/api/announcementApi";
+import { Button } from "../components/ui/button";
+import { Calendar, ChevronRight } from "lucide-react";
 
 export default function Explore() {
+    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchAnnouncements();
+    }, []);
+
+    const fetchAnnouncements = async () => {
+        try {
+            setLoading(true);
+            // Backend already filters to show only active, published, non-expired announcements for clients
+            // So we can trust the backend response and just sort by priority
+            const data = await getAnnouncements();
+            console.log(data);
+            console.log("Explore - fetched announcements:", data);
+            // Ensure data is an array
+            const announcementsArray = Array.isArray(data) ? data : [];
+            // Sort by priority (highest first) - backend already returns active announcements only
+            const sortedAnnouncements = announcementsArray.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+            console.log("Explore - sorted announcements:", sortedAnnouncements);
+            setAnnouncements(sortedAnnouncements);
+        } catch (error) {
+            console.error("Explore - Error fetching announcements:", error);
+            setAnnouncements([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const formatDate = (dateString: string | null | undefined) => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
+    const featuredAnnouncement = announcements[0];
+
     return (
-        // <section 
-        // id="explore"
-        // className="w-full pb-20 text-black relative flex  items-start flex-col ">
-        //     <div className="text-center flex flex-col w-full items-center justify-center mb-10 max-w-xs self-center">
-        //         <span className="text-sm flex flex-row items-center gap-3 font-medium">EXPLORE<span className="border-b-2  border-rose w-[50px]"></span></span>
-        //         <span className="text-3xl font-bold ">What's New Today.</span>
-        //     </div>
-        //     <div className="flex w-1/2 items-center gap-3 self-center">
-        //         <div className="shadow-lg p-5 roudned-lg flex flex-col w-72 gap-2">
-        //             <span className="text-black/50 text-xs ">10th DEC 2025</span>
-        //             <span className="font-medium text-sm">Anniversary Discount</span>
-        //             <Button variant="outlined" className="rounded-lg! w-fit text-sm!">Continue</Button>
-        //         </div>
-        //     </div>
-        // </section>
         <>
             <section className="section__container banner__container">
                 <div className="banner__content">
@@ -37,15 +67,60 @@ export default function Explore() {
             <section className="explore" id="explore">
                 <p className="section__subheader">EXPLORE</p>
                 <h2 className="section__header">What's New Today.</h2>
-                <div className="explore__bg">
-                    <div className="explore__content">
-                        <p className="section__description">10th DEC 2025</p>
-                        <h4>Anniversary Discount.</h4>
-                        <button className="btn">Continue</button>
+                {loading ? (
+                    <div className="explore__bg">
+                        <div className="explore__content">
+                            <div className="animate-pulse">
+                                <div className="h-4 bg-white/20 rounded w-32 mb-4"></div>
+                                <div className="h-6 bg-white/20 rounded w-48 mb-4"></div>
+                                <div className="h-10 bg-white/20 rounded w-24"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                ) : featuredAnnouncement ? (
+                    <div 
+                        className="explore__bg"
+                        style={{
+                            backgroundImage: featuredAnnouncement.image 
+                                ? `url(${featuredAnnouncement.image})` 
+                                : undefined
+                        }}
+                    >
+                        <div className="explore__content">
+                            {featuredAnnouncement.published_at && (
+                                <p className="section__description">
+                                    <Calendar className="inline h-4 w-4 mr-1" />
+                                    {formatDate(featuredAnnouncement.published_at)}
+                                </p>
+                            )}
+                            <h4>{featuredAnnouncement.title}</h4>
+                            <p className="text-white/90 text-sm mb-4 line-clamp-2">
+                                {featuredAnnouncement.content}
+                            </p>
+                            <button 
+                                className="btn"
+                                onClick={() => navigate("/villas")}
+                            >
+                                Continue
+                                <ChevronRight className="inline h-4 w-4 ml-1" />
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="explore__bg">
+                        <div className="explore__content">
+                            <p className="section__description">Stay Tuned</p>
+                            <h4>New Updates Coming Soon</h4>
+                            <button 
+                                className="btn"
+                                onClick={() => navigate("/villas")}
+                            >
+                                View Accommodations
+                            </button>
+                        </div>
+                    </div>
+                )}
             </section>
         </>
-
-    )
+    );
 }

@@ -147,139 +147,232 @@ export default function ManageAccount() {
   }
 
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
-      <div className="max-w-7xl mx-auto !px-4 sm:!px-6 lg:!px-8 !py-6 sm:!py-8 lg:!py-12 relative">
+    <div className="min-h-full w-full overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-white to-[#e82574]/5">
+      <div className="max-w-4xl mx-auto px-4! sm:px-6! lg:px-8! py-8! sm:py-10! lg:py-12!">
         {/* Header Section */}
-        <div className="bg-white shadow-xl border border-[#e82574]/20 !mb-6 sm:!mb-8 w-screen">
-          <div className="!px-6 sm:!px-8 lg:!px-10 !py-3 sm:!py-2 lg:!py-1">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between !gap-4 sm:!gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center !gap-3">
-                  <div className="w-12 h-12 bg-[#e82574] flex items-center justify-center shadow-md">
-                    <span className="text-2xl">👤</span>
-                  </div>
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#bc1c5c]">
-                      My Account
-                    </h1>
-                    <p className="text-gray-600 text-sm sm:text-base !mt-1">
-                      View and manage your personal account details
-                    </p>
-                  </div>
+        <div className="bg-white rounded-2xl shadow-lg border border-[#e82574]/10 mb-8! overflow-hidden">
+          <div className="bg-gradient-to-r from-[#e82574] to-[#bc1c5c] px-6! sm:px-8! lg:px-10! py-6! sm:py-8!">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4!">
+              <div className="flex items-center gap-4!">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white">
+                    My Account
+                  </h1>
+                  <p className="text-white/90 text-sm sm:text-base mt-1!">
+                    Manage your personal information and preferences
+                  </p>
                 </div>
               </div>
               <Button
                 onClick={() => setIsEditing(!isEditing)}
-                variant={isEditing ? "secondary" : "default"}
-                className="w-full sm:w-auto bg-[#e82574] hover:bg-[#bc1c5c] text-white shadow-md hover:shadow-lg transition-all duration-200 !px-6 !py-2.5"
+                variant={isEditing ? "outline" : "default"}
+                className="w-full sm:w-auto bg-white text-[#e82574] hover:bg-white/90 border-0 shadow-md hover:shadow-lg transition-all duration-200 px-6! py-2.5! font-medium"
               >
-                {isEditing ? "Cancel Edit" : "Edit Profile"}
+                {isEditing ? "Cancel" : "Edit Profile"}
               </Button>
             </div>
           </div>
         </div>
 
         {/* Account Content Section */}
-        <div className="bg-white shadow-xl border border-[#e82574]/20 overflow-hidden w-screen">
-          <div className="!p-6 sm:!p-8 lg:!p-10">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 !gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-gray-700">Full Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                    {...register("name", { required: "Name is required" })}
-                    readOnly={!isEditing}
-                  />
-                  {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+        <div className="bg-white rounded-2xl shadow-lg border border-[#e82574]/10 overflow-hidden">
+          <div className="p-6! sm:p-8! lg:p-10!">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              {/* Personal Information Section */}
+              <div>
+                <div className="mb-6!">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1!">Personal Information</h2>
+                  <p className="text-sm text-gray-500">Update your personal details and contact information</p>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username" className="text-gray-700">Username</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                    {...register("username")}
-                    readOnly={!isEditing}
-                  />
-                  {errors.username && <p className="text-sm text-red-500">{errors.username.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-700">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                    {...register("email", { required: "Email is required", pattern: /^\S+@\S+$/i })}
-                    readOnly={!isEditing}
-                  />
-                  {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                    {...register("phone")}
-                    readOnly={!isEditing}
-                  />
-                  {errors.phone && <p className="text-sm text-red-500">{errors.phone.message}</p>}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6!">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                      Full Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      className="!h-11 border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !rounded-lg transition-colors"
+                      {...register("name", { required: "Name is required" })}
+                      readOnly={!isEditing}
+                      disabled={!isEditing}
+                    />
+                    {errors.name && (
+                      <p className="text-xs text-red-500 mt-1!">{errors.name.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="username" className="text-sm font-medium text-gray-700">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      className="h-11! border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] rounded-lg! transition-colors"
+                      {...register("username")}
+                      readOnly={!isEditing}
+                      disabled={!isEditing}
+                    />
+                    {errors.username && (
+                      <p className="text-xs text-red-500 mt-1!">{errors.username.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                      Email Address <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      className="h-11! border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] rounded-lg! transition-colors"
+                      {...register("email", { 
+                        required: "Email is required", 
+                        pattern: {
+                          value: /^\S+@\S+$/i,
+                          message: "Please enter a valid email address"
+                        }
+                      })}
+                      readOnly={!isEditing}
+                      disabled={!isEditing}
+                    />
+                    {errors.email && (
+                      <p className="text-xs text-red-500 mt-1!">{errors.email.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      className="h-11! border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] rounded-lg! transition-colors"
+                      {...register("phone")}
+                      readOnly={!isEditing}
+                      disabled={!isEditing}
+                    />
+                    {errors.phone && (
+                      <p className="text-xs text-red-500 mt-1!">{errors.phone.message}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
+              {/* Password Section */}
               {isEditing && (
-                <div className="grid grid-cols-1 md:grid-cols-2 !gap-6 border-t border-gray-200 !pt-6 !mt-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-gray-700">New Password (optional)</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                      {...register("password")}
-                    />
-                    {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+                <div className="border-t border-gray-200 pt-8!">
+                  <div className="mb-6!">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-1!">Change Password</h2>
+                    <p className="text-sm text-gray-500">Leave blank if you don't want to change your password</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-gray-700">Confirm New Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574]"
-                      {...register("confirmPassword")}
-                    />
-                    {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6!">
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                        New Password
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        className="!h-11 border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] !rounded-lg transition-colors"
+                        {...register("password", {
+                          minLength: {
+                            value: 6,
+                            message: "Password must be at least 6 characters"
+                          }
+                        })}
+                        placeholder="Enter new password"
+                      />
+                      {errors.password && (
+                        <p className="text-xs text-red-500 mt-1!">{errors.password.message}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                        Confirm Password
+                      </Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        className="h-11! border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] rounded-lg! transition-colors"
+                        {...register("confirmPassword")}
+                        placeholder="Confirm new password"
+                      />
+                      {errors.confirmPassword && (
+                        <p className="text-xs text-red-500 mt-1!">{errors.confirmPassword.message}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 !gap-6 border-t border-gray-200 !pt-6 !mt-6">
-                <div className="space-y-2">
-                  <Label className="text-gray-700">Account Status</Label>
-                  <Input value={user.status?.toUpperCase() || "N/A"} readOnly className="bg-gray-100" />
+              {/* Account Details Section */}
+              <div className="border-t border-gray-200 pt-8!">
+                <div className="mb-6!">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1!">Account Details</h2>
+                  <p className="text-sm text-gray-500">Your account information and status</p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-gray-700">Role</Label>
-                  <Input value={user.role?.toUpperCase() || "CUSTOMER"} readOnly className="bg-gray-100" />
-                </div>
-                {user.google_id && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6!">
                   <div className="space-y-2">
-                    <Label className="text-gray-700">Google ID</Label>
-                    <Input value={user.google_id} readOnly className="bg-gray-100" />
+                    <Label className="text-sm font-medium text-gray-700">Account Status</Label>
+                    <Input 
+                      value={user.status?.toUpperCase() || "ACTIVE"} 
+                      readOnly 
+                      className="!h-11 bg-gray-50 border-gray-200 text-gray-700 cursor-not-allowed !rounded-lg"
+                    />
                   </div>
-                )}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">Account Role</Label>
+                    <Input 
+                      value={user.role?.toUpperCase() || "CUSTOMER"} 
+                      readOnly 
+                      className="!h-11 bg-gray-50 border-gray-200 text-gray-700 cursor-not-allowed !rounded-lg"
+                    />
+                  </div>
+                  {user.google_id && (
+                    <div className="space-y-2 md:col-span-2">
+                      <Label className="text-sm font-medium text-gray-700">Google Account</Label>
+                      <Input 
+                        value={user.google_id} 
+                        readOnly 
+                        className="!h-11 bg-gray-50 border-gray-200 text-gray-700 cursor-not-allowed !rounded-lg"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
+              {/* Action Buttons */}
               {isEditing && (
-                <div className="flex justify-end !gap-4 !pt-6">
+                <div className="flex flex-col sm:flex-row justify-end gap-3! pt-6! border-t border-gray-200">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                    className="px-6! py-2.5! rounded-lg! border-gray-300 text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     type="submit"
-                    className="bg-[#e82574] hover:bg-[#bc1c5c] text-white shadow-md hover:shadow-lg transition-all duration-200 !px-8 !py-3"
+                    className="bg-[#e82574] hover:bg-[#bc1c5c] text-white shadow-md hover:shadow-lg transition-all duration-200 px-8! py-2.5! rounded-lg! font-medium"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Saving..." : "Save Changes"}
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2!">
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                    ) : (
+                      "Save Changes"
+                    )}
                   </Button>
                 </div>
               )}

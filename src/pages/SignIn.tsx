@@ -77,7 +77,6 @@ export function SignIn({ onToggle }: SignInProps) {
   };
 
 
-
   return (
     <Card className="border-none shadow-xl backdrop-blur-md bg-white/80 rounded-2xl overflow-hidden p-10!">
       <CardHeader className="text-center space-y-2 pb-4">

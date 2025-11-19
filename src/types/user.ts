@@ -12,7 +12,7 @@ export interface User {
 }
 
 export interface Notification {
-  id: string;
+  id: number | string;
   user_id: number;
   title: string;
   message: string;
