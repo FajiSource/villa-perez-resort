@@ -49,7 +49,7 @@ export function SignIn({ onToggle }: SignInProps) {
 
       if (response.token) {
         login(response.token);
-        toast.success("Welcome back to Paradise Villa Resort!");
+        toast.success("Welcome back to  Villa Resort!");
         navigate("/dashboard", { replace: true });
       } else {
         toast.error("Invalid email or password");
@@ -84,7 +84,7 @@ export function SignIn({ onToggle }: SignInProps) {
           Welcome Back
         </CardTitle>
         <CardDescription className="text-gray-600">
-          Sign in to your Paradise Villa Resort account
+          Sign in to your  Villa Resort account
         </CardDescription>
       </CardHeader>
 

@@ -39,7 +39,7 @@ export default function AuthLayout() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/20" />
         <div className="relative z-10 p-12 flex flex-col justify-end text-white">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Paradise Villa Resort</h1>
+          <h1 className="text-4xl font-bold mb-4">Welcome to  Villa Resort</h1>
           <p className="text-white/90 max-w-md text-lg">
             Experience luxury and tranquility in our exclusive beachfront villas. Your perfect getaway awaits.
           </p>

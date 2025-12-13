@@ -61,7 +61,7 @@ export function SignUp({ onToggle }: SignUpProps) {
 
       if (response.token) {
         login(response.token);
-        toast.success("Welcome to Paradise Villa Resort!");
+        toast.success("Welcome to  Villa Resort!");
         navigate("/dashboard", { replace: true });
       } else {
         toast.error("Registration successful, but login failed. Please sign in manually.");
@@ -96,7 +96,7 @@ export function SignUp({ onToggle }: SignUpProps) {
           Create Account
         </CardTitle>
         <CardDescription className="text-gray-600">
-          Join Paradise Villa Resort and start your getaway!
+          Join  Villa Resort and start your getaway!
         </CardDescription>
       </CardHeader>
 

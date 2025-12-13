@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
+import { FaFacebook, FaInstagram, FaYoutube, FaTwitter } from "react-icons/fa";
 
 export default function Footer() {
     const navigate = useNavigate();
@@ -48,10 +49,10 @@ export default function Footer() {
                         <li><a href="#">Cristina Ege</a></li>
                     </ul>
                     <div className="footer__socials">
-                        <a href="#"><img src="facebook.png" alt="facebook" /></a>
-                        <a href="#"><img src="instagram.png" alt="instagram" /></a>
-                        <a href="#"><img src="youtube.png" alt="youtube" /></a>
-                        <a href="#"><img src="twitter.png" alt="twitter" /></a>
+                        <a href="#"><FaFacebook /></a>    
+                        <a href="#"><FaInstagram /></a>
+                        <a href="#"><FaYoutube /></a>
+                        <a href="#"><FaTwitter /></a>
                     </div>
                 </div>
             </div>
