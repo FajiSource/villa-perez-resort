@@ -39,16 +39,16 @@ export function SignIn({ onToggle }: SignInProps) {
   const onSubmit = async (data: SignInFormData) => {
     setIsSubmitting(true);
     try {
-      const response = await apiService.post<{ access_token: string; user?: any }>(
-        "/api/auth/login",
+      const response = await apiService.post<{ token: string; user?: any; token_type?: string }>(
+        "/api/login",
         {
           email: data.email,
           password: data.password,
         }
       );
 
-      if (response.access_token) {
-        login(response.access_token);
+      if (response.token) {
+        login(response.token);
         toast.success("Welcome back to Paradise Villa Resort!");
         navigate("/dashboard", { replace: true });
       } else {
@@ -165,7 +165,7 @@ export function SignIn({ onToggle }: SignInProps) {
       </CardContent>
 
       <CardFooter className="flex flex-col gap-4 mt-4">
-        <div className="relative w-full">
+        {/* <div className="relative w-full">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-300" />
           </div>
@@ -200,7 +200,7 @@ export function SignIn({ onToggle }: SignInProps) {
           </svg>
           Continue with Google
 
-        </Button>
+        </Button> */}
 
         <p className="text-center text-sm text-gray-600">
           Don’t have an account?{" "}

@@ -4,6 +4,7 @@ import { apiService } from "../services/apiService";
 import { useAuth } from "../context/AuthContext";
 import { type Villa, type VillaApiResponse } from "../types/villa";
 import { ImageWithFallback } from "./ui/ImageWithFallback";
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function BookCards() {
     const navigate = useNavigate();
@@ -17,12 +18,6 @@ export default function BookCards() {
 
     // Helper function to normalize API response to Villa format
     const normalizeVilla = (apiVilla: VillaApiResponse): Villa => {
-        // Get base URL for images (assuming images are relative paths)
-        const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-        const imageUrl = apiVilla.image?.startsWith("http") 
-            ? apiVilla.image 
-            : `${API_BASE_URL}${apiVilla.image}`;
-
         return {
             id: `villa-${apiVilla.id}`,
             rc_id: apiVilla.id, // Use id as rc_id
@@ -30,7 +25,7 @@ export default function BookCards() {
             type: apiVilla.type,
             description: apiVilla.description,
             price: apiVilla.price,
-            image_url: imageUrl,
+            image_url: getImageUrl(apiVilla.image),
             max_guests: apiVilla.maxGuests,
             amenities: apiVilla.amenities || [],
             status: apiVilla.status.toLowerCase() as "available" | "booked" | "maintenance",

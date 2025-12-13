@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import type { Villa } from "../types/villa";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/ui/ImageWithFallback";
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function ViewVillas() {
   const { token } = useAuth();
@@ -37,7 +38,7 @@ export default function ViewVillas() {
         type: (villa.type?.toLowerCase() || 'room') as "room" | "cottage" | "party-space",
         description: villa.description || '',
         price: Number(villa.price || villa.price_per_night || 0),
-        image_url: villa.image || villa.image_url || '',
+        image_url: getImageUrl(villa.image || villa.image_url),
         max_guests: Number(villa.maxGuests || villa.max_guests || villa.capacity || 0),
         amenities: Array.isArray(villa.amenities) ? villa.amenities : [],
         status: (villa.status?.toLowerCase() || 'available') as "available" | "booked" | "maintenance",

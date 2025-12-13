@@ -1,5 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
+
 export default function Footer() {
+    const navigate = useNavigate();
+
     return (
         <footer className="footer" id="contact">
             <div className="section__container footer__container">
@@ -12,7 +16,12 @@ export default function Footer() {
                         where comfort, luxury, and adventure come together to create the
                         getaway of your dreams..
                     </p>
-                    <button className="btn">Book Now</button>
+                    <button 
+                        className="btn"
+                        onClick={() => navigate("/villas")}
+                    >
+                        Book Now
+                    </button>
                 </div>
                 <div className="footer__col">
                     <h4>QUICK LINKS</h4>

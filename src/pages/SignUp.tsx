@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -13,6 +15,7 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { apiService } from "../services/apiService";
+import { useAuth } from "../context/AuthContext";
 
 interface SignUpFormData {
   name: string;
@@ -27,6 +30,9 @@ interface SignUpProps {
 
 export function SignUp({ onToggle }: SignUpProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -35,8 +41,38 @@ export function SignUp({ onToggle }: SignUpProps) {
   } = useForm<SignUpFormData>();
 
   const onSubmit = async (data: SignUpFormData) => {
-    console.log("Sign up data:", data);
-    toast.success("Welcome to Paradise Villa Resort!");
+    setIsSubmitting(true);
+    try {
+      // Register the user
+      await apiService.post("/api/register", {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+
+      // Automatically log in after successful registration
+      const response = await apiService.post<{ token: string; user?: any; token_type?: string }>(
+        "/api/login",
+        {
+          email: data.email,
+          password: data.password,
+        }
+      );
+
+      if (response.token) {
+        login(response.token);
+        toast.success("Welcome to Paradise Villa Resort!");
+        navigate("/dashboard", { replace: true });
+      } else {
+        toast.error("Registration successful, but login failed. Please sign in manually.");
+      }
+    } catch (error: any) {
+      console.error("Sign up error:", error);
+      const errorMessage = error.message || "Failed to create account. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleSignUp = async () => {
@@ -109,18 +145,32 @@ export function SignUp({ onToggle }: SignUpProps) {
             <Label htmlFor="password" className="text-gray-700">
               Password
             </Label>
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
-              })}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                className="pr-10 border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-sm text-red-500">{errors.password.message}</p>
             )}
@@ -131,16 +181,30 @@ export function SignUp({ onToggle }: SignUpProps) {
             <Label htmlFor="confirmPassword" className="text-gray-700">
               Confirm Password
             </Label>
-            <Input
-              id="confirmPassword"
-              type={showPassword ? "text" : "password"}
-              className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
-              {...register("confirmPassword", {
-                required: "Please confirm your password",
-                validate: (value) =>
-                  value === watch("password") || "Passwords do not match",
-              })}
-            />
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showPassword ? "text" : "password"}
+                className="pr-10 border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === watch("password") || "Passwords do not match",
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <p className="text-sm text-red-500">
                 {errors.confirmPassword.message}
@@ -151,8 +215,9 @@ export function SignUp({ onToggle }: SignUpProps) {
           <Button
             type="submit"
             className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg transition"
+            disabled={isSubmitting}
           >
-            Sign Up
+            {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>
         </form>
       </CardContent>

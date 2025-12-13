@@ -40,7 +40,7 @@ function Header() {
                     <h1>Where Every Stay Comes<br /> with a <span>Splash</span>.</h1>
                 </div>
             </header>
-            <section className="section__container booking__container">
+            {/* <section className="section__container booking__container">
                 <form action="/" className="booking__form">
                     <div className="input__group">
                         <span><i className="ri-calendar-2-fill"></i></span>
@@ -67,7 +67,7 @@ function Header() {
                         <button className="btn">CHECK OUT</button>
                     </div>
                 </form>
-            </section>
+            </section> */}
         </>
     );
 }

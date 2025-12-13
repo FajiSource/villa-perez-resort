@@ -11,6 +11,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { ImageWithFallback } from "../components/ui/ImageWithFallback";
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function BookingPage() {
   const { isAuthenticated, token } = useAuth();
@@ -65,12 +66,6 @@ export default function BookingPage() {
 
       // Helper function to normalize API response to Villa format
       const normalizeVilla = (apiVilla: VillaApiResponse): Villa => {
-        const API_BASE_URL =
-          import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-        const imageUrl = apiVilla.image?.startsWith("http")
-          ? apiVilla.image
-          : `${API_BASE_URL}${apiVilla.image}`;
-
         return {
           id: `villa-${apiVilla.id}`,
           rc_id: apiVilla.id,
@@ -78,7 +73,7 @@ export default function BookingPage() {
           type: apiVilla.type,
           description: apiVilla.description,
           price: apiVilla.price,
-          image_url: imageUrl,
+          image_url: getImageUrl(apiVilla.image),
           max_guests: apiVilla.maxGuests,
           amenities: apiVilla.amenities || [],
           status: apiVilla.status.toLowerCase() as

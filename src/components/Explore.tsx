@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getAnnouncements, type Announcement } from "../lib/api/announcementApi";
 import { Button } from "../components/ui/button";
 import { Calendar, ChevronRight } from "lucide-react";
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function Explore() {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -82,7 +83,7 @@ export default function Explore() {
                         className="explore__bg"
                         style={{
                             backgroundImage: featuredAnnouncement.image 
-                                ? `url(${featuredAnnouncement.image})` 
+                                ? `url(${getImageUrl(featuredAnnouncement.image)})` 
                                 : undefined
                         }}
                     >

@@ -18,14 +18,8 @@ export default function Dashboard() {
   const fetchRecentBookings = async () => {
     try {
       setLoading(true);
-      const headers: HeadersInit = {};
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const bookings = await apiService.get<Booking[]>("/api/bookings", {
-        headers,
-      });
+      // apiService automatically adds Authorization header from localStorage token
+      const bookings = await apiService.get<Booking[]>("/api/bookings");
       // Extract bookings array from response
       const bookingsArray = Array.isArray(bookings) ? bookings : (bookings as any)?.data || [];
       // Get the 3 most recent bookings
