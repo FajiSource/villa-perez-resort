@@ -17,7 +17,6 @@ class ApiService {
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     
-    // Get token from localStorage
     const token = localStorage.getItem("token");
     
     const defaultHeaders: Record<string, string> = {
@@ -25,12 +24,10 @@ class ApiService {
       Accept: "application/json",
     };
 
-    // Add Authorization header if token exists
     if (token) {
       defaultHeaders["Authorization"] = `Bearer ${token}`;
     }
 
-    // Merge headers properly
     const headers = new Headers();
     Object.entries(defaultHeaders).forEach(([key, value]) => {
       headers.set(key, value);
@@ -62,7 +59,6 @@ class ApiService {
     try {
       response = await fetch(url, config);
     } catch (error: any) {
-      // Handle network errors (CORS, connection refused, etc.)
       if (error instanceof TypeError && error.message === "Failed to fetch") {
         throw new Error(
           `Unable to connect to the server. Please check if the API server is running at ${this.baseURL}`
@@ -73,9 +69,30 @@ class ApiService {
     
     if (!response.ok) {
       let errorMessage = `API request failed: ${response.statusText}`;
+      let errorData: any = {};
+      
       try {
-        const errorData = await response.json();
-        // Try multiple possible error message fields
+        errorData = await response.json();
+      } catch {
+      }
+      
+      if (response.status === 422 && errorData.errors) {
+        const errorMessages: string[] = [];
+        Object.keys(errorData.errors).forEach((field) => {
+          const fieldErrors = errorData.errors[field];
+          if (Array.isArray(fieldErrors)) {
+            errorMessages.push(...fieldErrors);
+          } else if (typeof fieldErrors === 'string') {
+            errorMessages.push(fieldErrors);
+          }
+        });
+        
+        if (errorMessages.length > 0) {
+          errorMessage = errorMessages.join(", ");
+        } else {
+          errorMessage = errorData.message || "Validation failed. Please check your input.";
+        }
+      } else {
         errorMessage = 
           errorData.message || 
           errorData.detail || 
@@ -83,18 +100,15 @@ class ApiService {
           errorData.msg ||
           (Array.isArray(errorData.detail) ? errorData.detail.join(", ") : errorData.detail) ||
           errorMessage;
-      } catch {
-        // If response is not JSON, use the status text
       }
       
-      // Include status code in error for better handling
       const error = new Error(errorMessage);
       (error as any).status = response.status;
       (error as any).statusText = response.statusText;
+      (error as any).errors = errorData.errors || null;
       throw error;
     }
 
-    // Handle empty responses
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const text = await response.text();
