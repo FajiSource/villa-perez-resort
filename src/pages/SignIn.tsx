@@ -137,23 +137,6 @@ export function SignIn({ onToggle }: SignInProps) {
             )}
           </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <Label htmlFor="remember" className="flex items-center gap-2 cursor-pointer">
-              <input
-                id="remember"
-                type="checkbox"
-                className="rounded border-gray-300 text-[#e82574] focus:ring-[#e82574]"
-              />
-              <span>Remember me</span>
-            </Label>
-            <button
-              type="button"
-              className="text-[#e82574] hover:text-[#bc1c5c] hover:underline"
-            >
-              Forgot password?
-            </button>
-          </div>
-
           <Button
             type="submit"
             className="w-full bg-[#e82574] hover:bg-[#bc1c5c] text-white py-2 rounded-lg transition"
