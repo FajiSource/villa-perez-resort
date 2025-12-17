@@ -1,15 +1,31 @@
 import Logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
 
 function Header() {
     const { isAuthenticated } = useAuth();
+    const [isSticky, setIsSticky] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const headerContainer = document.querySelector('.header__container');
+            if (headerContainer) {
+                const containerRect = headerContainer.getBoundingClientRect();
+                setIsSticky(containerRect.top < -50);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
    
     return (
         
         <>
             <header className="header">
-                <nav>
+                <nav className={isSticky ? 'nav--sticky' : ''}>
                     <div className="nav__bar">
                         <div className="logo">
                             <a href="/"><img src={Logo} alt="logo" /></a>

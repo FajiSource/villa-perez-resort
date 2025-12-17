@@ -68,7 +68,7 @@ export default function ViewVillas() {
   }
 
   return (
-    <div className="h-screen w-full overflow-y-hidden overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
+    <div className="min-h-screen w-full overflow-y-auto overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
       <div className="w-full mx-auto relative">
         {/* Header Section */}
         <div className="shadow-xl border border-[#e82574]/20 w-full mx-auto">
@@ -101,7 +101,7 @@ export default function ViewVillas() {
         </div>
 
         {/* Villas Content Section */}
-        <div className="bg-white border border-[#e82574]/20 overflow-hidden w-full">
+        <div className="bg-white border border-[#e82574]/20 w-full">
           <div className="p-6! sm:p-8! lg:p-10!">
             {villas.length === 0 ? (
               <div className="text-center py-16! sm:py-20!">
