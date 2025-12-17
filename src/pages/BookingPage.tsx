@@ -7,6 +7,7 @@ import { apiService } from "../services/apiService";
 import { useAuth } from "../context/AuthContext";
 import { type Villa, type VillaApiResponse } from "../types/villa";
 import { type Room } from "../types/booking";
+import { type User } from "../types/user";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -22,6 +23,9 @@ export default function BookingPage() {
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const roomId = searchParams.get("roomId");
 
@@ -32,6 +36,8 @@ export default function BookingPage() {
       return;
     }
 
+    fetchCurrentUser();
+    
     if (roomId) {
       fetchVillaData(roomId);
     } else {
@@ -39,6 +45,19 @@ export default function BookingPage() {
       navigate("/");
     }
   }, [roomId, isAuthenticated, navigate, token]);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const headers: HeadersInit = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const userData = await apiService.get<User>("/api/user", { headers });
+      setCurrentUser(userData);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const fetchVillaData = async (id: string) => {
     try {
@@ -133,6 +152,8 @@ export default function BookingPage() {
       };
 
       setSelectedRoom(room);
+      
+      await fetchUnavailableDates(rcId);
     } catch (error: any) {
       console.error("Error fetching villa:", error);
       toast.error("Failed to load villa details");
@@ -142,13 +163,37 @@ export default function BookingPage() {
     }
   };
 
+  const fetchUnavailableDates = async (rcId: number) => {
+    try {
+      setLoadingAvailability(true);
+      const headers: HeadersInit = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await apiService.get<{
+        success: boolean;
+        unavailable_dates: string[];
+      }>(`/api/bookings/availability/check?rc_id=${rcId}`, { headers });
+
+      if (response.success && response.unavailable_dates) {
+        setUnavailableDates(response.unavailable_dates);
+      }
+    } catch (error: any) {
+      console.error("Error fetching unavailable dates:", error);
+    } finally {
+      setLoadingAvailability(false);
+    }
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     reset,
+    setError,
     formState: { errors },
-  } = useForm<BookingFormData>({
+  } = useForm<Omit<BookingFormData, 'name'>>({
     defaultValues: {
       rc_id: selectedRoom
         ? parseInt(selectedRoom.id.replace("villa-", "") || "1")
@@ -157,7 +202,6 @@ export default function BookingPage() {
     },
   });
 
-  // Update form when selectedRoom changes
   useEffect(() => {
     if (selectedRoom) {
       const rcId = parseInt(selectedRoom.id.replace("villa-", "") || "1");
@@ -171,7 +215,6 @@ export default function BookingPage() {
   const checkIn = watch("check_in");
   const checkOut = watch("check_out");
 
-  // Calculate price based on dates
   useEffect(() => {
     if (checkIn && checkOut && selectedRoom) {
       const checkInDate = new Date(checkIn);
@@ -192,12 +235,8 @@ export default function BookingPage() {
     }
   }, [checkIn, checkOut, selectedRoom]);
 
-  // Update rc_id when room changes
   useEffect(() => {
     if (selectedRoom) {
-      // Map room IDs to database rc_id
-      // This mapping should match your backend database
-      // The rc_id is set in the form defaultValues
     }
   }, [selectedRoom]);
 
@@ -327,9 +366,29 @@ export default function BookingPage() {
     return "An unexpected error occurred. Please try again or contact support if the problem persists.";
   };
 
-  const onSubmit = async (data: BookingFormData) => {
+  const onSubmit = async (data: Omit<BookingFormData, 'name'>) => {
     if (!selectedRoom) {
       toast.error("Please select a room");
+      return;
+    }
+
+    if (!isDateAvailable(data.check_in)) {
+      toast.error("The selected check-in date is not available. Please choose another date.");
+      setError("check_in", {
+        type: "manual",
+        message: "This date is not available",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!isDateRangeAvailable(data.check_in, data.check_out)) {
+      toast.error("The selected date range includes unavailable dates. Please select different dates.");
+      setError("check_out", {
+        type: "manual",
+        message: "The selected date range includes unavailable dates",
+      });
+      setIsSubmitting(false);
       return;
     }
 
@@ -346,9 +405,15 @@ export default function BookingPage() {
         return;
       }
 
+      if (!currentUser || !currentUser.name) {
+        toast.error("User information not available. Please refresh the page.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const bookingData = {
         rc_id: rcId,
-        name: data.name,
+        name: currentUser.name,
         contact: data.contact,
         check_in: data.check_in,
         check_out: data.check_out,
@@ -414,6 +479,28 @@ export default function BookingPage() {
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0];
+
+  const isDateAvailable = (dateString: string): boolean => {
+    return !unavailableDates.includes(dateString);
+  };
+
+  const isDateRangeAvailable = (checkIn: string, checkOut: string): boolean => {
+    if (!checkIn || !checkOut) return true;
+    
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    const currentDate = new Date(checkInDate);
+    
+    while (currentDate < checkOutDate) {
+      const dateStr = currentDate.toISOString().split("T")[0];
+      if (unavailableDates.includes(dateStr)) {
+        return false;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return true;
+  };
 
   return (
     <div className="min-h-screen w-screen overflow-x-hidden relative bg-gradient-to-br from-[#e82574]/5 via-[#e82574]/3 to-[#e82574]/5">
@@ -533,15 +620,29 @@ export default function BookingPage() {
                         id="check_in"
                         type="date"
                         min={today}
-                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
+                        className={`border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2! ${
+                          checkIn && !isDateAvailable(checkIn) ? "border-red-500" : ""
+                        }`}
                         {...register("check_in", {
                           required: "Check-in date is required",
-                          onChange: () => setErrorMessage(null),
+                          onChange: (e) => {
+                            setErrorMessage(null);
+                            const selectedDate = e.target.value;
+                            if (selectedDate && !isDateAvailable(selectedDate)) {
+                              toast.error("This date is not available. Please select another date.");
+                            }
+                          },
                           validate: (value) => {
+                            if (!isDateAvailable(value)) {
+                              toast.error("This date is not available. Please select another date.");
+                              return "This date is not available";
+                            }
+                            
                             if (
                               checkOut &&
                               new Date(value) >= new Date(checkOut)
                             ) {
+                              toast.error("Check-in must be before check-out");
                               return "Check-in must be before check-out";
                             }
                             return true;
@@ -551,6 +652,16 @@ export default function BookingPage() {
                       {errors.check_in && (
                         <p className="text-sm text-red-500 mt-1!">
                           {errors.check_in.message}
+                        </p>
+                      )}
+                      {loadingAvailability && (
+                        <p className="text-xs text-gray-500 mt-1!">
+                          Checking availability...
+                        </p>
+                      )}
+                      {!loadingAvailability && unavailableDates.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-1!">
+                          Some dates may be unavailable. Please check before booking.
                         </p>
                       )}
                     </div>
@@ -566,15 +677,29 @@ export default function BookingPage() {
                         id="check_out"
                         type="date"
                         min={checkIn || tomorrow}
-                        className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
+                        className={`border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2! ${
+                          checkIn && checkOut && !isDateRangeAvailable(checkIn, checkOut) ? "border-red-500" : ""
+                        }`}
                         {...register("check_out", {
                           required: "Check-out date is required",
-                          onChange: () => setErrorMessage(null),
+                          onChange: (e) => {
+                            setErrorMessage(null);
+                            const selectedDate = e.target.value;
+                            if (checkIn && selectedDate && !isDateRangeAvailable(checkIn, selectedDate)) {
+                              toast.error("The selected date range includes unavailable dates. Please select different dates.");
+                            }
+                          },
                           validate: (value) => {
+                            if (checkIn && !isDateRangeAvailable(checkIn, value)) {
+                              toast.error("The selected date range includes unavailable dates. Please select different dates.");
+                              return "The selected date range includes unavailable dates";
+                            }
+                            
                             if (
                               checkIn &&
                               new Date(value) <= new Date(checkIn)
                             ) {
+                              toast.error("Check-out must be after check-in");
                               return "Check-out must be after check-in";
                             }
                             return true;
@@ -584,6 +709,11 @@ export default function BookingPage() {
                       {errors.check_out && (
                         <p className="text-sm text-red-500 mt-1!">
                           {errors.check_out.message}
+                        </p>
+                      )}
+                      {checkIn && checkOut && !isDateRangeAvailable(checkIn, checkOut) && (
+                        <p className="text-xs text-red-500 mt-1!">
+                          ⚠️ The selected date range includes unavailable dates
                         </p>
                       )}
                     </div>
@@ -601,7 +731,10 @@ export default function BookingPage() {
                       max={selectedRoom.maxGuests}
                       className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
                       {...register("pax", {
-                        required: "Number of guests is required",
+                        required: {
+                          value: true,
+                          message: "Number of guests is required",
+                        },
                         min: {
                           value: 1,
                           message: "At least 1 guest is required",
@@ -611,6 +744,17 @@ export default function BookingPage() {
                           message: `Maximum ${selectedRoom.maxGuests} guests allowed`,
                         },
                         valueAsNumber: true,
+                        validate: (value) => {
+                          if (!value || value < 1) {
+                            toast.error("At least 1 guest is required");
+                            return "At least 1 guest is required";
+                          }
+                          if (value > selectedRoom.maxGuests) {
+                            toast.error(`Maximum ${selectedRoom.maxGuests} guests allowed`);
+                            return `Maximum ${selectedRoom.maxGuests} guests allowed`;
+                          }
+                          return true;
+                        },
                       })}
                     />
                     {errors.pax && (
@@ -623,30 +767,6 @@ export default function BookingPage() {
                     </p>
                   </div>
 
-                  {/* Name */}
-                  <div className="space-y-2 mb-2!">
-                    <Label htmlFor="name" className="text-gray-700 font-medium">
-                      Full Name *
-                    </Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
-                      {...register("name", {
-                        required: "Name is required",
-                        minLength: {
-                          value: 2,
-                          message: "Name must be at least 2 characters",
-                        },
-                      })}
-                    />
-                    {errors.name && (
-                      <p className="text-sm text-red-500 mt-1!">
-                        {errors.name.message}
-                      </p>
-                    )}
-                  </div>
-
                   {/* Contact */}
                   <div className="space-y-2 mb-2!">
                     <Label
@@ -655,16 +775,48 @@ export default function BookingPage() {
                     >
                       Contact Number *
                     </Label>
-                    <Input
+                      <Input
                       id="contact"
                       type="tel"
                       className="border-gray-300 focus:border-[#e82574] focus:ring-[#e82574] px-4! py-3! mt-2!"
-                      placeholder="+63 9XX XXX XXXX"
+                      placeholder="+63 9XX XXX XXXX or 09XX XXX XXXX"
                       {...register("contact", {
                         required: "Contact number is required",
-                        pattern: {
-                          value: /^[0-9+\-\s()]+$/,
-                          message: "Invalid contact number format",
+                        validate: (value) => {
+                          const cleaned = value.replace(/[\s\-()+]/g, "");
+                          
+                          if (!/^\d+$/.test(cleaned)) {
+                            toast.error("Contact number must contain only numbers and valid formatting characters");
+                            return "Contact number must contain only numbers and valid formatting characters";
+                          }
+                          
+                          let phoneNumber = cleaned;
+                          
+                          if (phoneNumber.startsWith("63")) {
+                            phoneNumber = phoneNumber.substring(2);
+                          }
+                          
+                          if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+                            toast.error("Contact number must be 10-11 digits (e.g., 09123456789 or +639123456789)");
+                            return "Contact number must be 10-11 digits";
+                          }
+                          
+                          if (phoneNumber.length === 11 && !phoneNumber.startsWith("0")) {
+                            toast.error("Invalid phone number format. Philippine numbers should start with 0 or +63");
+                            return "Invalid phone number format";
+                          }
+                          
+                          if (phoneNumber.length === 10 && !phoneNumber.startsWith("9")) {
+                            toast.error("Invalid phone number format. Should start with 9 (e.g., 9123456789)");
+                            return "Invalid phone number format";
+                          }
+                          
+                          if (phoneNumber.length === 11 && phoneNumber.startsWith("0") && phoneNumber[1] !== "9") {
+                            toast.error("Invalid phone number format. Should be 09XXXXXXXXX");
+                            return "Invalid phone number format";
+                          }
+                          
+                          return true;
                         },
                       })}
                     />
